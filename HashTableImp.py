@@ -20,7 +20,7 @@ class HashTable:
                 break
         if not found:
             self.table[index].append(package)  
-        print(f"Inserted package with ID {packageId} into index {index}")
+        #print(f"Inserted package with ID {packageId} into index {index}")
     
     # Delete a package from the hash table by package ID
     def delete(self, packageId, package):
@@ -28,7 +28,7 @@ class HashTable:
         for i, p in enumerate(self.table[index]):
             if p.id == packageId:
                 del self.table[index][i]
-                print(f"Deleted package with ID {packageId} from index {index}")
+                #print(f"Deleted package with ID {packageId} from index {index}")
                 return True
         print(f"Package with ID {packageId} not found.")
         return False
@@ -38,7 +38,7 @@ class HashTable:
         index = self._hash(packageId)
         for p in self.table[index]:
             if p.id == packageId:
-                print(f"Found package with ID {packageId} at index {index}")
+                #print(f"Found package with ID {packageId} at index {index}")
                 return p  
         print(f"Package with ID {packageId} not found.")
         return None  # if not found
