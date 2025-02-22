@@ -12,32 +12,28 @@ def read_packages_from_csv(file_path):
                 id = int(row[0])                
                 addressId = row[1]
                 address = row[2]
-                city = row[3]
-                state = row[4]
-                zip_code = row[5]
-
-                print(row[6])
+                
 
                 # EOD = 11:59 PM
-                deadline = ClockTime("11:59 PM" if row[6] == "EOD" else row[6])
+                deadline = ClockTime("11:59 PM" if row[3] == "EOD" else row[3])
 
-                weight = row[7]
+                weight = row[4]
                 
-                truckId = int(row[8]) if  row[8] != '' else -1   # truckId = 0, 1, or 2
+                truckId = int(row[5]) if  row[5] != '' else -1   # truckId = 0, 1, or 2
 
-                arrivedAt = ClockTime("08:00 AM" if row[9] == '' else row[9])
+                arrivedAt = ClockTime("08:00 AM" if row[6] == '' else row[6])
 
 
-                isValidAddress = row[10] == ''
+                isValidAddress = row[7] == ''
 
-                correctAddress = row[10]
+                correctAddress = row[7]
 
-                addressCorrectedAt = ClockTime("08:00 AM" if isValidAddress else row[11])
+                addressCorrectedAt = ClockTime("08:00 AM" if isValidAddress else row[8])
 
-                deliveredWith = {int(item) for item in row[12].split(';') if item.isdigit()}
+                deliveredWith = {int(item) for item in row[9].split(';') if item.isdigit()}
 
                 # Create a Package object using the extracted data
-                package = Package(id, addressId, address, city, state, zip_code, deadline, weight, truckId, arrivedAt, isValidAddress, correctAddress, addressCorrectedAt, deliveredWith)
+                package = Package(id, addressId, address, deadline, weight, truckId, arrivedAt, isValidAddress, correctAddress, addressCorrectedAt, deliveredWith)
                 packages.append(package)
     return packages
 

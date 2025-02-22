@@ -7,14 +7,9 @@ class Truck:
         self.packages = []
 
     def isNotFull(self):
-        print('len and maxCap ,, :')
-        print(len(self.packages))
-        print(self.maxCapacity)
         return len(self.packages) < self.maxCapacity
         
     def isNotFullAfterAdding(self, additionalPackages):
-        print('additionalPackages ,, :')
-        print(additionalPackages)
         return (len(self.packages) + additionalPackages) <= self.maxCapacity
     
     def __repr__(self):

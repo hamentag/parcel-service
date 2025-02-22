@@ -1,12 +1,10 @@
 from ClockTime import ClockTime
 class Package:
-    def __init__(self, id, addressId, address, city, state, zip, deadline, weight, truckId, arrivedAt, isValidAddress, correctAddress, addressCorrectedAt, deliveredWith):
+    def __init__(self, id, addressId, address, deadline, weight, truckId, arrivedAt, isValidAddress, correctAddress, addressCorrectedAt, deliveredWith):
         self.id = id
         self.addressId = addressId
         self.address = address
-        self.city = city
-        self.state = state
-        self.zip = zip
+    
         self.deadline = deadline
         self.weight = weight
         
@@ -42,7 +40,7 @@ class Package:
         
     
     def __repr__(self):
-        return f"Package(id={self.id}, addressId={self.addressId}, address={self.address}, city={self.city}, state={self.state}, zip={self.zip}, " \
+        return f"Package(id={self.id}, addressId={self.addressId}, address={self.address}, " \
         f"deadline={self.deadline}, weight={self.weight}, truckId={self.truckId}, arrivedAt={self.arrivedAt}, " \
         f"outForDeliveryAt={self.outForDeliveryAt}, isValidAddress={self.isValidAddress}, correctAddress={self.correctAddress}, " \
         f"addressCorrectedAt={self.addressCorrectedAt}, deliveredWith={self.deliveredWith}, status={self.status})"
