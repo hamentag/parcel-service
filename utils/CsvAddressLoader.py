@@ -3,7 +3,7 @@ from Address import Address
 # from ClockTime import ClockTime
 
 # Read package data from CSV file and return a list of Address objects.
-def readAddresses(file_path):
+def readAddressesData(file_path):
     addresses = []
     with open(file_path, mode='r', newline='', encoding='utf-8') as file:
         csv_reader = csv.reader(file)
@@ -18,7 +18,7 @@ def readAddresses(file_path):
                 address = row[2]
                 city = row[3]
                 state = row[4]
-                zip = row[5]                     
+                zip = row[5]                  
 
                 address = Address(id, place, address, city, state, zip)
                 addresses.append(address)

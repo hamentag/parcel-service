@@ -12,7 +12,7 @@ class PackageHashTable(HashTable):
 
     ###
     # Method to return grouped packages
-    def getGgroupePackages(self):
+    def getGgroupedPackages(self):
         groupedPackages = []
         for entry in self.table:
             for p in entry:

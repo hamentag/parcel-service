@@ -7,7 +7,8 @@ class Address:
         self.state = state
         self.zip = zip
 
-        self.packages = []    
+        self.packages = []
+
     
     def __repr__(self):
         packages_repr = ', '.join([repr(package) for package in self.packages])

@@ -1,9 +1,10 @@
 import csv
 from Package import Package
 from ClockTime import ClockTime
+from Status import Status
 
 # Read package data from CSV file and return a list of Package objects.
-def read_packages_from_csv(file_path):
+def readPackagesData(file_path):
     packages = []
     with open(file_path, mode='r', newline='', encoding='utf-8') as file:
         csv_reader = csv.reader(file)
@@ -32,8 +33,10 @@ def read_packages_from_csv(file_path):
 
                 deliveredWith = {int(item) for item in row[9].split(';') if item.isdigit()}
 
+                status = Status(deadline, arrivedAt, isValidAddress, addressCorrectedAt)
+
                 # Create a Package object using the extracted data
-                package = Package(id, addressId, address, deadline, weight, truckId, arrivedAt, isValidAddress, correctAddress, addressCorrectedAt, deliveredWith)
+                package = Package(id, addressId, address, deadline, weight, truckId, correctAddress, deliveredWith, status)
                 packages.append(package)
     return packages
 
