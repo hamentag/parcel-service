@@ -12,7 +12,7 @@ class PackageHashTable(HashTable):
 
     ###
     # Method to return grouped packages
-    def getGgroupedPackages(self):
+    def getGroupedPackages(self):
         groupedPackages = []
         for entry in self.table:
             for p in entry:
@@ -34,9 +34,8 @@ class PackageHashTable(HashTable):
                             groupedPackages.append(deliveredWith)
                     else:
                         groupedPackages.append(deliveredWith)
-                        print(groupedPackages)
+                        # print(groupedPackages)
         return groupedPackages
-
 
     # Group packages by their addressId
     def group_by_address_id(self):
@@ -51,5 +50,25 @@ class PackageHashTable(HashTable):
                 address_groups[addressId].append(p.id)
 
         return [group for group in address_groups.values() if len(group) >= 2]
+    
+
+    # ## (pck_id, deadline)
+    # def to_24hr_format(time_str):
+    #     if deadline_str == "EOD":
+    #         deadline_str = "11:59 PM"
+    
+    #     deadline_str_24hr = to_24hr_format(deadline_str)
+
+    #     time_part, period = time_str.split()
+    #     hour, minute = map(int, time_part.split(':'))
+        
+    #     if period == "AM":
+    #         if hour == 12:
+    #             hour = 0  # Midnight case (12:xx AM becomes 00:xx)
+    #     else:  # PM
+    #         if hour != 12:
+    #             hour += 12  # PM times (except 12 PM) should be converted to 24-hour format
+        
+    #     return f"{hour:02}:{minute:02}"
 
   

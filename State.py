@@ -4,4 +4,7 @@ class State(Enum):
     ARRIVED = 1
     VALID_ADDRESS = 2
     DELIVERED = 3
-    OUT_FOR_DELIVERY = 4
+    EN_ROUTE = 4
+    AT_THE_HUB = 5
+    READY = 6
+    FINISHED_DELIVERING = 7     # For trucks

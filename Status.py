@@ -1,11 +1,5 @@
 from ClockTime import ClockTime
-from enum import Enum
-
-class State(Enum):
-    ARRIVED = 1
-    VALID_ADDRESS = 2
-    DELIVERED = 3
-    OUT_FOR_DELIVERY = 4
+from State import State
 
 class Status:
     def __init__(self, deadline, arrivedAt, isValidAddress, addressCorrectedAt):
@@ -20,27 +14,32 @@ class Status:
         
         self.addressCorrectedAt = addressCorrectedAt
 
-        self.trackingHistory = [(State.ARRIVED, self.arrivedAt), 
-                                (State.VALID_ADDRESS, self.addressCorrectedAt)]
+        if self.arrivedAt.isBefore(self.addressCorrectedAt):
+            self.trackingHistory = [(State.ARRIVED, self.arrivedAt), (State.VALID_ADDRESS, self.addressCorrectedAt), (State.READY, self.addressCorrectedAt)]
+        else:
+            self.trackingHistory = [(State.VALID_ADDRESS, self.addressCorrectedAt), (State.ARRIVED, self.arrivedAt), (State.READY, self.arrivedAt)]
 
     
     # Add a new status and timestamp to the history
-    def addToHistory(self, status, timestamp):
-        self.trackingHistory.append((status, timestamp))
+    def addToHistory(self, status, time):
+        self.trackingHistory.append((status, time))
 
-    # Return the status at or before the specified time.
+    # Return the status at or before the specified time. 
     def getStatusAt(self, time):
+        # print(self.trackingHistory)
         for status, timestamp in reversed(self.trackingHistory):
-            if timestamp <= time:
+             if timestamp.isBefore(time): # if timestamp <= time:
                 return status
-        return None 
+        return None
     
+    def is_ready(self, time):
+        return self.getStatusAt(time) == State.READY  
 
 
-    def isArrivedAt(self, thisTime):
+    def isArrivedAt(self, time):
         for status, timestamp in self.trackingHistory:
             if status == "ARRIVED":
-                if thisTime < timestamp:
+                if time < timestamp:
                     return False
                 return True
         return False 
@@ -54,16 +53,16 @@ class Status:
     #         return False
     #     return True
 
-    def isValidAddressAt(self,thisTime):  
+    def isValidAddressAt(self,time):  
         if self.isValidAddress:
             return True
         #t = ClockTime(thisTime)
-        if thisTime.isBefore(self.addressCorrectedAt):
+        if time.isBefore(self.addressCorrectedAt):
             return False
         return True
 
-    def isAvailableAt(self, thisTime):
-        return self.isArrivedAt(thisTime) and self.isValidAddressAt(thisTime)
+    def isAvailableAt(self, time):
+        return self.isArrivedAt(time) and self.isValidAddressAt(time)
         
     
     def __repr__(self):

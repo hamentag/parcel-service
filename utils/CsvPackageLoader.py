@@ -11,7 +11,7 @@ def readPackagesData(file_path):
         for row in csv_reader:
             if row:  # Skip empty rows
                 id = int(row[0])                
-                addressId = row[1]
+                addressId = int(row[1])
                 address = row[2]
                 
 

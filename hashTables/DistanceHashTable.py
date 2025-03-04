@@ -62,7 +62,9 @@ class DistanceHashTable:
             return f"No distances found for address {addr}."
         
 
-    ###########################
+    ##########################
+    # accepts list of adress ids and a given address id
+    # returns sorted list of addresses with their distances to the given address
     def get_sorted_distances(self, addr, address_list):
         distances = []
         for other_addr in address_list:
