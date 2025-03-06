@@ -14,42 +14,52 @@ class ClockTime:
     # Returns the time as a string in 'HH:MM AM/PM' format.
     def get_time_str(self):
         return time.strftime("%I:%M %p", self.value)
+
     
+    # # Compares the current time object with another ClockTime object
+    # def isBefore(self, other):
+    #     # Convert both times to minutes from the start of the day (00:00)
+    #     current_time_minutes = self.value.tm_hour * 60 + self.value.tm_min
+    #     other_time_minutes = other.value.tm_hour * 60 + other.value.tm_min
+        
+    #     return current_time_minutes <= other_time_minutes
     
-    # Compares the current time object with another ClockTime object
-    def isBefore(self, other):
-        # Convert both times to minutes from the start of the day (00:00)
-        current_time_minutes = self.value.tm_hour * 60 + self.value.tm_min
-        other_time_minutes = other.value.tm_hour * 60 + other.value.tm_min
+    # # Compares the current time object with another ClockTime object or time string in 'HH:MM AM/PM' format
+    # def is_before(self, target_time):
+    #     if isinstance(target_time, str):
+    #         target_time = ClockTime(target_time)
         
-        return current_time_minutes <= other_time_minutes
-    def is_before(self, other):
-        # Convert both times to minutes from the start of the day (00:00)
-        current_time_minutes = self.value.tm_hour * 60 + self.value.tm_min
-        other_time_minutes = other.value.tm_hour * 60 + other.value.tm_min
+    #     current_time_minutes = self.value.tm_hour * 60 + self.value.tm_min
+    #     other_time_minutes = target_time.value.tm_hour * 60 + target_time.value.tm_min
         
-        return current_time_minutes < other_time_minutes            ######## <<<<<<<<<<<<
+    #     return current_time_minutes < other_time_minutes
     
-    # Compares the current time object with a time string in 'HH:MM AM/PM' format
-    def isBeforeWithStr(self, time_str):
-        # Parse the string time to a struct_time
-        other_time = time.strptime(time_str, self.format_string)
+    # Compares the current time object with another ClockTime object or time string in 'HH:MM AM/PM' format
+    def __lt__(self, target_time):
+        if isinstance(target_time, str):
+            target_time = ClockTime(target_time)
         
-        # Convert both times to minutes from the start of the day (00:00)
         current_time_minutes = self.value.tm_hour * 60 + self.value.tm_min
-        other_time_minutes = other_time.tm_hour * 60 + other_time.tm_min
+        other_time_minutes = target_time.value.tm_hour * 60 + target_time.value.tm_min
         
         return current_time_minutes < other_time_minutes
     
+    def __ge__(self, target_time):
+        if isinstance(target_time, str):
+            target_time = ClockTime(target_time)
+        
+        current_time_minutes = self.value.tm_hour * 60 + self.value.tm_min
+        other_time_minutes = target_time.value.tm_hour * 60 + target_time.value.tm_min
+        
+        return current_time_minutes >= other_time_minutes
     
-    
-    # Calculate the arrival time based on distance and speed using the object's time
-    def get_arrival_time(self, time_to_travel_minutes):
+    # Add travel time to current time (in minutes)
+    def add_travel_time(self, time_to_travel_minutes):
         # Get current hour and minute from the current ClockTime object (self)
         current_hour = self.value.tm_hour
         current_minute = self.value.tm_min
         
-        # Add travel time to current time (in minutes)
+        #Calculate total minutes
         total_minutes = (current_hour * 60 + current_minute) + time_to_travel_minutes
         
         # Calculate the new hour and minute
@@ -67,10 +77,9 @@ class ClockTime:
                 arrival_hour = 12
         
         # Format the time as a string for the new ClockTime object
-        # arrival_time_str = f"{arrival_hour:02}:{arrival_minute:02} {period}"
         arrival_time_str = f"{int(arrival_hour):02}:{int(arrival_minute):02} {period}"
+
+        self.time_str = arrival_time_str
+        self.value = time.strptime(arrival_time_str, self.format_string)
         
-        # Return the arrival time as a new ClockTime object
-        return ClockTime(arrival_time_str)
-        # return arrival_time_str
-        
+        return self

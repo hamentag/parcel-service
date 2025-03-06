@@ -1,4 +1,4 @@
-from utils.QuicksortFunction import quicksort
+from utils.Quicksorter import sort
 
 class DistanceHashTable:
     def __init__(self):
@@ -62,6 +62,10 @@ class DistanceHashTable:
             return f"No distances found for address {addr}."
         
 
+    # Extract distance from pair tuple (addr, distance)
+    def extract_distance(self, pair):
+        return pair[1]
+    
     ##########################
     # accepts list of adress ids and a given address id
     # returns sorted list of addresses with their distances to the given address
@@ -76,7 +80,7 @@ class DistanceHashTable:
             if distance is not None:
                 distances.append((other_addr, distance))
                 
-        quicksort(distances, 0, len(distances) - 1)
+        sort(distances, 0, len(distances) - 1, self.extract_distance)     
 
         return distances
     

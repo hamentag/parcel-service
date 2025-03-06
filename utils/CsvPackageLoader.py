@@ -22,18 +22,15 @@ def readPackagesData(file_path):
                 
                 truckId = int(row[5]) if  row[5] != '' else -1   # truckId = 0, 1, or 2
 
-                arrivedAt = ClockTime("08:00 AM" if row[6] == '' else row[6])
-
-
-                isValidAddress = row[7] == ''
+                arrivedAt = ClockTime('08:00 AM' if row[6] == '' else row[6])
 
                 correctAddress = row[7]
 
-                addressCorrectedAt = ClockTime("08:00 AM" if isValidAddress else row[8])
+                addressCorrectedAt = ClockTime('08:00 AM' if row[8] == '' else row[8])
 
                 deliveredWith = {int(item) for item in row[9].split(';') if item.isdigit()}
 
-                status = Status(deadline, arrivedAt, isValidAddress, addressCorrectedAt)
+                status = Status(deadline, arrivedAt, addressCorrectedAt)
 
                 # Create a Package object using the extracted data
                 package = Package(id, addressId, address, deadline, weight, truckId, correctAddress, deliveredWith, status)

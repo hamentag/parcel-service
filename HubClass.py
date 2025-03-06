@@ -101,7 +101,11 @@ class Hub:
     #             deadlines.add(deadline)
     #     return deadlines
 
-    
+    def trucks_total_mileage(self):
+        total = 0
+        for truck in self.trucks:
+            total += truck.mileage
+        return total
 
     def __repr__(self):
         trucks_repr = ', '.join([repr(truck) for truck in self.trucks])

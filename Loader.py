@@ -15,7 +15,7 @@ class Loader:
                 truck.add_single_package(package_id)
                 self.hub.packages.remove(package_id)
                 # change status to out for delivery
-                package.status.addToHistory(State.EN_ROUTE, time)
+                package.status.add_to_history(State.EN_ROUTE, time)
                 truck.packages.add(package_id)
 
     
@@ -24,8 +24,9 @@ class Loader:
             if package is not None:
                 return package.deadline
             
+    # Get the earliest deadline : the sorting criterion for the outer list
     def get_earliest_deadline(self, set_pck_ids):
-        # Convert set to a list and sort inner list
+        # Convert set to a list and sort the inner list
         list_pck_id = list(set_pck_ids)
         sort(list_pck_id, 0, len(list_pck_id) - 1, self.get_deadline)
         
@@ -47,12 +48,10 @@ class Loader:
                 if package: 
                     truck.add_single_package(pck_id)
                     self.hub.packages.remove(pck_id)
-                    package.status.addToHistory(State.EN_ROUTE, time)
+                    package.status.add_to_history(State.EN_ROUTE, time)
                 else:
                     print(f"Package {pck_id} not found.")
-            # truck.add_packages(packages[i])
-            # for pck_id in packages[i]:
-            #     self.hub.packages.remove(pck_id)
+            
             i += 1
     
 
@@ -108,42 +107,33 @@ class Loader:
         print(',,,,,sorteddd,,,,,,groups_pcks_with_similar_address')
         print(package_lists)
         
-        # i = 0           #### fct
-        # while i < len(packages) and not truck.is_overloaded_by_adding(len(packages[i])) and not self.hub.isEmpty():
-        #     all_ready = all(self.packageHashTable.lookup(pck_id).status.is_ready(time) for pck_id in packages[i])
-        #     if not all_ready:
-        #         i += 1
-        #         continue
-            
-        #     for pck_id in packages[i]:
-        #         package = self.packageHashTable.lookup(pck_id)
-        #         if package: 
-        #             truck.add_single_package(pck_id)
-        #             self.hub.packages.remove(pck_id)
-        #             package.status.addToHistory(State.EN_ROUTE, time)
-        #         else:
-        #             print(f"Package {pck_id} not found.")
-        #     # truck.add_packages(packages[i])
-        #     # for pck_id in packages[i]:
-        #     #     self.hub.packages.remove(pck_id)
-        #     i += 1
-
         self.assign_package_sets(package_lists, truck, time)
     
     
     def assign_pcks_with_distinct_addresses(self, truck, time):
         packages = self.hub.group_pcks_with_distinct_addresses()
+        print("hub pck here ,,,,")
+        print(self.hub.packages)
+        print("truck pck here ,,,,")
+        print(truck.packages)
+        print(truck.isFull())
+        
         i = 0
-        while not truck.isFull() and not self.hub.isEmpty():
+        while i < len(packages) and not truck.isFull() and not self.hub.isEmpty():
             package_id = packages[i]
             package = self.packageHashTable.lookup(package_id)
             if package is not None and package.status.is_ready(time):
                 truck.add_single_package(package_id)
                 self.hub.packages.remove(package_id)
                 # change status to out for delivery
-                package.status.addToHistory(State.EN_ROUTE, time)
+                package.status.add_to_history(State.EN_ROUTE, time)
 
             i += 1
+        print("hub pck here ,, after,,,,")
+        print(self.hub.packages)
+        print("truck pck here ,,,,")
+        print(truck.packages)
+        print(truck.isFull())
 
 
     def load(self, truck, time):

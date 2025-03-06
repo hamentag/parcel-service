@@ -11,7 +11,7 @@ from State import State
 from utils.CsvPackageLoader import readPackagesData
 from utils.CsvAddressLoader import readAddressesData
 from utils.CsvDistanceLoader import readDistanceData
-from utils.QuicksortFunction import quicksort
+from utils.Quicksorter import sort
 
 
 ################################################## packageHashTable #############################################
@@ -84,9 +84,12 @@ for package_id in package_ids:
 
 
 
-load = []
-load.append(start)
-load.append(start)
+loading_sequences = [start.get_time_str(), start.get_time_str()]
+
+ld = [start.get_time_str(), start.get_time_str()]
+
+NUM_DRIVERS = 2
+
 # load.pop(0)
 # load.apend(t)
 
@@ -94,9 +97,10 @@ load.append(start)
 loader = Loader(packageHashTable, hub)
 delivery_process = DeliveryProcess(packageHashTable, distance_hash_table, hub)
 
+i = 0
 while len(hub.packages) > 0:
    
-    time = load.pop(0)
+    time = ClockTime(loading_sequences.pop(0))
 
     selectedTruck = hub.selectTruckWithMinMileage()
     
@@ -110,9 +114,68 @@ while len(hub.packages) > 0:
 
     loader.load(selectedTruck, time)
 
-    delivery_process.fct(selectedTruck, time)
+    delivery_process.execute(selectedTruck, time)
 
 
 
+  
+
+    print("selectedTruck ...??")
+    print(selectedTruck)
+    print("selectedTruck.status.getStatusAt('09:25 AM')")
+    print(selectedTruck.status.getStatusAt('09:25 AM'))
 
 
+    print("time after del prcc,,")
+    print(time)
+
+    loading_sequences.append(time.get_time_str())
+    sort(loading_sequences, 0, len(loading_sequences) - 1, lambda var: ClockTime(var))
+
+    
+    # def get_val(var):
+    #     return ClockTime(var)    
+
+    ld.append(time.get_time_str())
+    sort(ld, 0, len(ld) - 1, lambda var: ClockTime(var)) 
+
+    
+
+
+    print('loading_sequences')
+    print(loading_sequences)
+
+    
+
+
+    i += 1
+
+    print("i = ")
+    print(i)
+    print("i % NUM_DRIVERS= ")
+    print(i % NUM_DRIVERS)
+
+# stp
+
+
+print(",,,ld = ")
+print(ld)
+
+
+print('loading_sequences end,,,')
+print(loading_sequences)
+
+packageHashTable.display()
+for pck in packageHashTable.getAllPackageIds():
+    p = packageHashTable.lookup(pck)
+    print(f"deadline: {p.deadline} --- status at deadline: {p.status.getStatusAt(ClockTime('08:33 AM'))} --- status at deadline: {p.status.getStatusAt(p.deadline)}")
+
+for pck in packageHashTable.getAllPackageIds():
+    p = packageHashTable.lookup(pck)
+    print(f"deadline: {p.deadline} --- Delivered at: {p.status.get_delivery_time()} --- status at deadline: {p.status.getStatusAt(p.deadline)}")
+
+
+for index, truck in enumerate(trucks):
+    print(f"mileage of truck index {index} is {truck.mileage} miles")
+
+print(f"total_mileage: {hub.trucks_total_mileage()} miles")

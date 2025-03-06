@@ -8,3 +8,8 @@ class State(Enum):
     AT_THE_HUB = 5
     READY = 6
     FINISHED_DELIVERING = 7     # For trucks
+    RETURNING_TO_THE_HUB = 8
+
+
+    def __repr__(self):
+            return self.name
