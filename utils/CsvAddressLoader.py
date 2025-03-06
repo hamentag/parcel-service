@@ -1,9 +1,8 @@
 import csv
 from Address import Address
-# from ClockTime import ClockTime
 
 # Read package data from CSV file and return a list of Address objects.
-def readAddressesData(file_path):
+def read_address_csv_file(file_path):
     addresses = []
     with open(file_path, mode='r', newline='', encoding='utf-8') as file:
         csv_reader = csv.reader(file)
@@ -23,3 +22,10 @@ def readAddressesData(file_path):
                 address = Address(id, place, address, city, state, zip)
                 addresses.append(address)
     return addresses
+
+# Insert addresses into the hash table
+def load_addresses_data(file_path, address_hash_table):
+    for address in read_address_csv_file(file_path):
+        address_hash_table.insert(address.id, address)
+
+

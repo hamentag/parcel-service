@@ -136,7 +136,7 @@ class Loader:
         print(truck.isFull())
 
 
-    def load(self, truck, time):
+    def load(self, truck, driver, time):
         # Note: Can only be on truck n
         self.assign_constrained_packages(truck, time)
 
@@ -151,16 +151,5 @@ class Loader:
 
         ####
         truck.status.addToHistory(State.EN_ROUTE, time)
-
-        print(',,,truck.packages')
-        for pck in truck.packages:
-            print(self.packageHashTable.lookup(pck))
-
-        print(',,,hubbbb')
-
-        print(self.hub)
-
-        print(',,,truck')
-
-        print(truck)
+        driver.allocate(truck, time)
        

@@ -1,10 +1,8 @@
 import csv
-from hashTables.DistanceHashTable import DistanceHashTable
 
 # Read distance data from CSV file and insert distances in the hash table.
-def readDistanceData(file_path):
-    distance_hash_table = DistanceHashTable()
-    
+def load_distance_data(file_path, distance_hash_table):
+        
     with open(file_path, mode='r', newline='', encoding='utf-8') as file:
         csv_reader = csv.reader(file)
 
@@ -18,4 +16,3 @@ def readDistanceData(file_path):
                         break
                     distance = float(col)
                     distance_hash_table.insert(addr1, addr2, distance)
-    return distance_hash_table

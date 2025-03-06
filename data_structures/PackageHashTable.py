@@ -1,4 +1,4 @@
-from hashTables.HashTable import HashTable
+from data_structures.HashTable import HashTable
 
 class PackageHashTable(HashTable):
     def __init__(self):

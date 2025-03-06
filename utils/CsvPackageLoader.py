@@ -4,7 +4,7 @@ from ClockTime import ClockTime
 from Status import Status
 
 # Read package data from CSV file and return a list of Package objects.
-def readPackagesData(file_path):
+def read_package_csv_file(file_path):
     packages = []
     with open(file_path, mode='r', newline='', encoding='utf-8') as file:
         csv_reader = csv.reader(file)
@@ -13,7 +13,6 @@ def readPackagesData(file_path):
                 id = int(row[0])                
                 addressId = int(row[1])
                 address = row[2]
-                
 
                 # EOD = 11:59 PM
                 deadline = ClockTime("11:59 PM" if row[3] == "EOD" else row[3])
@@ -36,4 +35,13 @@ def readPackagesData(file_path):
                 package = Package(id, addressId, address, deadline, weight, truckId, correctAddress, deliveredWith, status)
                 packages.append(package)
     return packages
+
+
+
+def lod_packages_data(file_path, package_hash_table):
+    # Insert packages into the hash table
+    for package in read_package_csv_file(file_path):
+        package_hash_table.insert(package.id, package)
+    print("The Hash Table has been successfully populated.")
+
 

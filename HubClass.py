@@ -1,11 +1,17 @@
 class Hub:
     HUB_ADDRESS_ID = 0
-    def __init__(self, name, packageHashTable, address_id=HUB_ADDRESS_ID):
+    def __init__(self, name, package_hash_table, address_id=HUB_ADDRESS_ID):
         self.name = name
         self.address_id = address_id
-        self.packageHashTable = packageHashTable
+        self.package_hash_table = package_hash_table
         self.trucks = []
         self.packages = []
+
+        self.packages = self.package_hash_table.getAllPackageIds()
+
+        # for package_id in self.package_hash_table.getAllPackageIds():
+        #     self.packages.append(package_id)
+        
         
     def selectTruckWithMinMileage(self):
         minTruck = self.trucks[0]
@@ -21,7 +27,7 @@ class Hub:
     def get_grouped_packages(self):
         groupedPackages = []
         for p_id in self.packages:
-            package = self.packageHashTable.lookup(p_id)
+            package = self.package_hash_table.lookup(p_id)
             if package is not None:
                 deliveredWith = package.deliveredWith
 
@@ -49,7 +55,7 @@ class Hub:
         address_groups = {}
 
         for p_id in self.packages:
-            package = self.packageHashTable.lookup(p_id)
+            package = self.package_hash_table.lookup(p_id)
             if package is not None:
                 addressId = package.addressId
                 if addressId not in address_groups:
@@ -63,8 +69,8 @@ class Hub:
         address_groups = self.group_by_address_id()
         return [group for group in address_groups.values() if len(group) >= 2]
     
-    # def groups_single_pck_in_address(self, packageHashTable):
-    #     address_groups = self.group_by_address_id(packageHashTable)
+    # def groups_single_pck_in_address(self, package_hash_table):
+    #     address_groups = self.group_by_address_id(package_hash_table)
     #     return [group for group in address_groups.values() if len(group) == 1]   
     
     def group_pcks_with_distinct_addresses(self):
@@ -78,11 +84,11 @@ class Hub:
 
 
     # # Group packages by their addressId
-    # def group_bbbbby_address_id(self, packageHashTable):
+    # def group_bbbbby_address_id(self, package_hash_table):
     #     address_groups = {}
 
     #     for p_id in self.packages:
-    #         package = packageHashTable.lookup(p_id)
+    #         package = package_hash_table.lookup(p_id)
     #         if package is not None:                
     #             addressId = package.addressId
     #             if addressId not in address_groups:
@@ -95,7 +101,7 @@ class Hub:
     # def get_distinct_deadlines(self):
     #     deadlines = {}
     #     for p_id in self.packages:
-    #         package = self.packageHashTable.lookup(p_id)
+    #         package = self.package_hash_table.lookup(p_id)
     #         if package is not None:
     #             deadline = package.deadline
     #             deadlines.add(deadline)

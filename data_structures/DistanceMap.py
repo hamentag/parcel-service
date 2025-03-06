@@ -1,6 +1,6 @@
 from utils.Quicksorter import sort
 
-class DistanceHashTable:
+class DistanceMap:
     def __init__(self):
         self.data = {}
 

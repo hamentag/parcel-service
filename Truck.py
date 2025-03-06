@@ -11,6 +11,9 @@ class Truck:
         self.speed = speed
         self.status = TruckStatus()
 
+        self.hub.trucks.append(self)
+
+
     def isNotFull(self):
         return len(self.packages) < self.maxCapacity
     
