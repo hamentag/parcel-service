@@ -1,7 +1,7 @@
 import time
-
+from data.Constants import START_SHIFT
 class ClockTime:
-    def __init__(self, time_str):
+    def __init__(self, time_str = START_SHIFT):
         self.format_string = "%I:%M %p"
         self.time_str = time_str
         self.value = time.strptime(time_str, self.format_string)
@@ -15,24 +15,26 @@ class ClockTime:
     def get_time_str(self):
         return time.strftime("%I:%M %p", self.value)
 
-    
-    # # Compares the current time object with another ClockTime object
-    # def isBefore(self, other):
-    #     # Convert both times to minutes from the start of the day (00:00)
-    #     current_time_minutes = self.value.tm_hour * 60 + self.value.tm_min
-    #     other_time_minutes = other.value.tm_hour * 60 + other.value.tm_min
+    #
+    def set_time_to_min_of(self, loading_sequences):
+        if len(loading_sequences) == 0:
+            return
+
+        min_time = time.strptime(loading_sequences[0], self.format_string)
+        min_index = 0
         
-    #     return current_time_minutes <= other_time_minutes
-    
-    # # Compares the current time object with another ClockTime object or time string in 'HH:MM AM/PM' format
-    # def is_before(self, target_time):
-    #     if isinstance(target_time, str):
-    #         target_time = ClockTime(target_time)
+        for index, seq in enumerate(loading_sequences):
+            seq_time = time.strptime(seq, self.format_string)
+            if seq_time < min_time:
+                min_time = seq_time
+                min_index = index
         
-    #     current_time_minutes = self.value.tm_hour * 60 + self.value.tm_min
-    #     other_time_minutes = target_time.value.tm_hour * 60 + target_time.value.tm_min
-        
-    #     return current_time_minutes < other_time_minutes
+        # Set the ClockTime object to the minimum time found
+        self.time_str = time.strftime(self.format_string, min_time)
+        self.value = min_time
+
+        # Remove the minimum time from the list
+        loading_sequences.pop(min_index)
     
     # Compares the current time object with another ClockTime object or time string in 'HH:MM AM/PM' format
     def __lt__(self, target_time):
@@ -44,6 +46,23 @@ class ClockTime:
         
         return current_time_minutes < other_time_minutes
     
+    def __gt__(self, target_time):
+        if isinstance(target_time, str):
+            target_time = ClockTime(target_time)
+        
+        current_time_minutes = self.value.tm_hour * 60 + self.value.tm_min
+        other_time_minutes = target_time.value.tm_hour * 60 + target_time.value.tm_min
+        
+        return current_time_minutes > other_time_minutes
+    
+    def __le__(self, target_time):
+        if isinstance(target_time, str):
+            target_time = ClockTime(target_time)
+        
+        current_time_minutes = self.value.tm_hour * 60 + self.value.tm_min
+        other_time_minutes = target_time.value.tm_hour * 60 + target_time.value.tm_min
+        
+        return current_time_minutes <= other_time_minutes
     def __ge__(self, target_time):
         if isinstance(target_time, str):
             target_time = ClockTime(target_time)
@@ -53,6 +72,15 @@ class ClockTime:
         
         return current_time_minutes >= other_time_minutes
     
+    def __eq__(self, target_time):
+        if isinstance(target_time, str):
+            target_time = ClockTime(target_time)
+    
+        current_time_minutes = self.value.tm_hour * 60 + self.value.tm_min
+        other_time_minutes = target_time.value.tm_hour * 60 + target_time.value.tm_min
+        
+        return current_time_minutes == other_time_minutes
+
     # Add travel time to current time (in minutes)
     def add_travel_time(self, time_to_travel_minutes):
         # Get current hour and minute from the current ClockTime object (self)

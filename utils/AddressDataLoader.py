@@ -1,10 +1,11 @@
 import csv
 from Address import Address
+from data.Constants import ADDRESS_FILE_PATH
 
 # Read package data from CSV file and return a list of Address objects.
-def read_address_csv_file(file_path):
+def read_address_csv_file():
     addresses = []
-    with open(file_path, mode='r', newline='', encoding='utf-8') as file:
+    with open(ADDRESS_FILE_PATH, mode='r', newline='', encoding='utf-8') as file:
         csv_reader = csv.reader(file)
 
         # Skip the first line (header)
@@ -24,8 +25,8 @@ def read_address_csv_file(file_path):
     return addresses
 
 # Insert addresses into the hash table
-def load_addresses_data(file_path, address_hash_table):
-    for address in read_address_csv_file(file_path):
+def load_addresses_data(address_hash_table):
+    for address in read_address_csv_file():
         address_hash_table.insert(address.id, address)
 
 

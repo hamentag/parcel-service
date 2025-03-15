@@ -1,7 +1,6 @@
 from TruckStatus import TruckStatus
+from data.Constants import TRUCK_MAX_CAPACITY, TRUCK_SPEED
 class Truck:
-    TRUCK_MAX_CAPACITY = 16
-    TRUCK_SPEED = 18        # mph
     def __init__(self, id, hub, maxCapacity = TRUCK_MAX_CAPACITY, speed = TRUCK_SPEED):
         self.id = id
         self.hub = hub
@@ -38,12 +37,8 @@ class Truck:
             return
         self.packages.add(package_id)
         # self.hub.packages.remove(package_id)
-         
 
 
-    # def __repr__(self):
-    #     packages_repr = ', '.join({repr(package) for package in self.packages})
-    #     return f"Truck(id={self.id}, lenOfPck={len(self.packages)}, maxCapacity={self.maxCapacity}, mileage={self.mileage}, packages=[{packages_repr}])"
 
     def __repr__(self):
         return f"Truck(id={self.id}, lenOfPck={len(self.packages)}, maxCapacity={self.maxCapacity}, mileage={self.mileage}, status={self.status}, packages={repr(self.packages)})"

@@ -6,6 +6,9 @@ class Address:
         self.city = city
         self.state = state
         self.zip = zip
+
+        self.packages = []
     
     def __repr__(self):
-        return f"Address(id={self.id}, place={self.place}, address={self.address}, city={self.city}, state={self.state}, zip={self.zip})"
+        packages_repr = ', '.join([repr(pck) for pck in self.packages])
+        return f"Address(id={self.id}, place={self.place}, address={self.address}, city={self.city}, state={self.state}, zip={self.zip}, packages=[{packages_repr}])"

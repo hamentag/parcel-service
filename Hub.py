@@ -5,9 +5,10 @@ class Hub:
         self.address_id = address_id
         self.package_hash_table = package_hash_table
         self.trucks = []
-        self.packages = []
+        self.end_of_delivery_day = None
+        # self.packages = []
 
-        self.packages = self.package_hash_table.getAllPackageIds()
+        # self.packages = self.package_hash_table.getAllPackageIds()
 
         # for package_id in self.package_hash_table.getAllPackageIds():
         #     self.packages.append(package_id)
@@ -68,10 +69,7 @@ class Hub:
     def groups_pcks_with_similar_address(self):
         address_groups = self.group_by_address_id()
         return [group for group in address_groups.values() if len(group) >= 2]
-    
-    # def groups_single_pck_in_address(self, package_hash_table):
-    #     address_groups = self.group_by_address_id(package_hash_table)
-    #     return [group for group in address_groups.values() if len(group) == 1]   
+
     
     def group_pcks_with_distinct_addresses(self):
         address_groups = self.group_by_address_id()
@@ -107,6 +105,17 @@ class Hub:
     #             deadlines.add(deadline)
     #     return deadlines
 
+    def get_grouped_deadlines(self):
+        grouped_deadlines = []
+        for p_id in self.packages:
+            package = self.package_hash_table.lookup(p_id)
+            if package is not None:
+                deadline = package.deadline.get_time_str()
+                if deadline not in grouped_deadlines:
+                    grouped_deadlines.append(deadline)
+        return grouped_deadlines
+    
+
     def trucks_total_mileage(self):
         total = 0
         for truck in self.trucks:
@@ -115,5 +124,4 @@ class Hub:
 
     def __repr__(self):
         trucks_repr = ', '.join([repr(truck) for truck in self.trucks])
-        packages_repr = ', '.join([repr(package) for package in self.packages])
-        return f"Hub(name={self.name}, address_id={self.address_id}, trucks=[{trucks_repr}], packages=[{packages_repr}])"
+        return f"Hub(name={self.name}, address_id={self.address_id}, end_of_delivery_day={self.end_of_delivery_day} trucks=[{trucks_repr}])"

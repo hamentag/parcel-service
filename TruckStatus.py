@@ -1,6 +1,6 @@
 from ClockTime import ClockTime
 from State import State
-START_SHIFT = '08:00 AM'
+from data.Constants import START_SHIFT
 
 class TruckStatus:
     def __init__(self):
