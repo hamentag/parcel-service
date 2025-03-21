@@ -42,7 +42,7 @@ class HashTable:
         return None  # if not found
     
     # Return a list of all elements IDs in the hash table
-    def getAllElementIds(self):
+    def get_all_element_ids(self):
         elementIds = []
         for entry in self.table:
             for el in entry:

@@ -19,7 +19,7 @@ def read_package_csv_file():
 
                 weight = row[3]
                 
-                truck_id = int(row[4]) if  row[4] != '' else -1   # truck_id = 0, 1, or 2
+                truck_id_requirement =  int(row[4]) if  row[4] != '' else -1   # truck_id = 0, 1, or 2
 
                 arrived_at = ClockTime(START_SHIFT if row[5] == '' else row[5])
 
@@ -32,12 +32,13 @@ def read_package_csv_file():
                 status = PackageStatus(deadline, arrived_at, address_updated_at)
 
                 # Create a Package object using the extracted data
-                package = Package(id, address_id, deadline, weight, truck_id, corrected_address_id, address_updated_at, delivered_with, status)
+                package = Package(id, address_id, deadline, weight, corrected_address_id, address_updated_at, truck_id_requirement, delivered_with, status)
                 packages.append(package)
     return packages
 
 
 def lod_packages_data(package_hash_table):
+    print("Starting to populate the hash table...")
     # Insert packages into the hash table
     for package in read_package_csv_file():
         package_hash_table.insert(package.id, package)

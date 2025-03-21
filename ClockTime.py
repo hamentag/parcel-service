@@ -1,15 +1,15 @@
 import time
 from data.Constants import START_SHIFT
 class ClockTime:
+    format_string = "%I:%M %p"
     def __init__(self, time_str = START_SHIFT):
-        self.format_string = "%I:%M %p"
         self.time_str = time_str
-        self.value = time.strptime(time_str, self.format_string)
+        self.value = time.strptime(time_str, ClockTime.format_string)
     
     # Display clock time object
     def __repr__(self):
         return f"ClockTime({self.time_str})"
-    
+
 
     # Returns the time as a string in 'HH:MM AM/PM' format.
     def get_time_str(self):
@@ -20,22 +20,55 @@ class ClockTime:
         if len(loading_sequences) == 0:
             return
 
-        min_time = time.strptime(loading_sequences[0], self.format_string)
+        min_time = time.strptime(loading_sequences[0], ClockTime.format_string)
         min_index = 0
         
         for index, seq in enumerate(loading_sequences):
-            seq_time = time.strptime(seq, self.format_string)
+            seq_time = time.strptime(seq, ClockTime.format_string)
             if seq_time < min_time:
                 min_time = seq_time
                 min_index = index
         
         # Set the ClockTime object to the minimum time found
-        self.time_str = time.strftime(self.format_string, min_time)
+        self.time_str = time.strftime(ClockTime.format_string, min_time)
         self.value = min_time
 
         # Remove the minimum time from the list
         loading_sequences.pop(min_index)
     
+
+    # Static method to calculate hours between two times in 'HH:MM AM/PM' format
+    @staticmethod
+    def hours_between(time1, time2):
+        # Use value if time1 is a ClockTime object
+        if isinstance(time1, ClockTime):
+            time1 = time1.value
+        else:
+            time1 = time.strptime(time1, ClockTime.format_string)  # Parse string into struct_time
+
+        if isinstance(time2, ClockTime):
+            time2 = time2.value
+        else:
+            time2 = time.strptime(time2, ClockTime.format_string)  # Parse string into struct_time
+        
+    
+        # Convert times to hours
+        time1_hrs = time1.tm_hour + time1.tm_min / 60.0
+        time2_hrs = time2.tm_hour + time2.tm_min / 60.0
+        
+        # Return the absolute difference in hours
+        return abs(time1_hrs - time2_hrs)
+    
+    @staticmethod
+    def calculate_distance(time1, time2, speed_mph):
+        # Calculate the time difference in hours
+        time_diff_hours = ClockTime.hours_between(time1, time2)
+        
+        # Calculate the distance (Distance = Speed * Time)
+        distance = speed_mph * time_diff_hours
+        return distance
+
+
     # Compares the current time object with another ClockTime object or time string in 'HH:MM AM/PM' format
     def __lt__(self, target_time):
         if isinstance(target_time, str):
@@ -108,6 +141,6 @@ class ClockTime:
         arrival_time_str = f"{int(arrival_hour):02}:{int(arrival_minute):02} {period}"
 
         self.time_str = arrival_time_str
-        self.value = time.strptime(arrival_time_str, self.format_string)
+        self.value = time.strptime(arrival_time_str, ClockTime.format_string)
         
         return self

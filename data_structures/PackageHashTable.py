@@ -9,8 +9,8 @@ class PackageHashTable(HashTable):
         self.AddressHashTable = AddressHashTable
 
     #
-    def getAllPackageIds(self):
-        return super().getAllElementIds()
+    def get_all_package_ids(self):
+        return super().get_all_element_ids()
     
     
     def get_min_deadline(self, time):
@@ -24,42 +24,13 @@ class PackageHashTable(HashTable):
     def assign_pcks_with_truck_id(self, time, truck, min_deadline):
         for entry in self.table:
             for p in entry:
-                if p.status.is_ready_at(time) and p.truck_id == truck.id and p.deadline == min_deadline:
+                if p.status.is_ready_at(time) and p.truck_id_requirement == truck.id and p.deadline == min_deadline:
                     # truck.packages.add(p.id)
                     truck.add_single_package(p.id)
                     p.status.add_to_history(State.EN_ROUTE, time)
+                    p.truck_id = truck.id
       
     
-    def getGroupedPackages(self, time, min_deadline):
-        package_groups = []   # List to store groups of packages
-
-        for entry in self.table:
-            for p in entry:
-                if p.status.is_ready_at(time) and p.deadline == min_deadline:
-                    delivered_with = p.delivered_with
-
-                    if len(delivered_with) != 0:
-                        delivered_with.add(p.id)
-
-                    # Find an existing group that intersects with the delivered_with set
-                    group_found = None
-                    for group in package_groups:
-                        if not delivered_with.isdisjoint(group):  # Check if there is an intersection
-                            group_found = group
-                            break
-
-                    if group_found:
-                        # Merge the found group with the `delivered_with` set
-                        group_found.update(delivered_with)
-                    else:
-                        # No group found, create a new group
-                        package_groups.append(delivered_with)
-
-        # Return the non-empty groups
-        return [group for group in package_groups if group]
-
-
-
     def get_packages_in_same_address(self, package_id, time):
         package = self.lookup(package_id)
         if package:
@@ -77,21 +48,6 @@ class PackageHashTable(HashTable):
                 if p.status.is_ready_at(time):
                     return True
         return False
-
-
-    # Group packages by their address_id
-    def group_by_address_id(self, time):
-        address_groups = {}
-
-        # Iterate over all packages in the hash table
-        for entry in self.table:
-            for p in entry:
-                address_id = p.get_address_id(time)
-                if address_id not in address_groups:
-                    address_groups[address_id] = []
-                address_groups[address_id].append(p.id)
-
-        return [group for group in address_groups.values() if len(group) >= 2]
     
 
     def assign_pck_to_addr(self, time):
@@ -99,7 +55,7 @@ class PackageHashTable(HashTable):
             for p in entry:
                 addrId = p.get_address_id(time)
                 addr = self.AddressHashTable.lookup(addrId)
-                addr.packages.append(p.id)
+                addr.packages.add(p.id)
 
     
     def get_ready_packages(self, time):
@@ -111,18 +67,39 @@ class PackageHashTable(HashTable):
 
         return ready_packages
     
-    def assign_rem_pcks(self, time, truck,min_deadline):
+
+ 
+    def collect_packages(self):
         for entry in self.table:
             for p in entry:
-                if truck.isFull():
-                    print("truckkk fullll")
-                    print(truck)
-                    return
+                set_delivered_with = p.delivered_with
+                if len(set_delivered_with) != 0:
+                    set_delivered_with.add(p.id)
+                    for p_id in set_delivered_with:         # Max = TRUCK_MAX_CAPACITY = 16
+                        package = self.lookup(p_id)
+                        package.delivered_with.update(set_delivered_with)
+                   
+    
+    
+    def add_multiple_packages(self, packages, truck, time):
+        for pck_id in packages:
+            package = self.lookup(pck_id)
+            if package and package.status.is_ready_at(time):
+                truck.add_single_package(pck_id)
+                package.status.add_to_history(State.EN_ROUTE, time)
+                package.truck_id = truck.id
+                
+    
+    def assign_package(self, time, truck, min_deadline):
+        for entry in self.table:
+            for p in entry:
                 if p.status.is_ready_at(time) and p.deadline <= min_deadline:
                     truck.add_single_package(p.id)
                     p.status.add_to_history(State.EN_ROUTE, time)
                     p.truck_id = truck.id
-
+                    if len(p.delivered_with) != 0 and not truck.is_overloaded_by_adding(len(p.delivered_with)):
+                        self.add_multiple_packages(p.delivered_with, truck, time)
+                    return
 
     def get_num_delivered_pcks(self, time):
         num_delivered_pcks = 0
@@ -131,11 +108,5 @@ class PackageHashTable(HashTable):
                 if p.status.is_delivered_at(time):
                     num_delivered_pcks += 1
         return num_delivered_pcks
-    
-    
-    
-    
-    
 
-    
-
+   

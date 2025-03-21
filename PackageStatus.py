@@ -1,5 +1,6 @@
 from ClockTime import ClockTime
 from State import State
+from data.Constants import START_SHIFT
 
 class PackageStatus:
     def __init__(self, deadline, arrived_at, addressCorrectedAt):
@@ -9,9 +10,9 @@ class PackageStatus:
         self.trackingHistory = []
         
         if self.addressCorrectedAt >= self.arrived_at:
-            self.add_all_to_history([(State.ARRIVED, self.arrived_at), (State.VALID_ADDRESS, self.addressCorrectedAt), (State.READY, self.addressCorrectedAt)])
+            self.add_all_to_history([(State.AT_THE_HUB, self.arrived_at), (State.VALID_ADDRESS, self.addressCorrectedAt), (State.READY, self.addressCorrectedAt)])
         else:
-            self.add_all_to_history([(State.VALID_ADDRESS, self.addressCorrectedAt), (State.ARRIVED, self.arrived_at), (State.READY, self.arrived_at)])
+            self.add_all_to_history([(State.VALID_ADDRESS, self.addressCorrectedAt), (State.AT_THE_HUB, self.arrived_at), (State.READY, self.arrived_at)])
        
 
     # Add a new status and timestamp to the history
@@ -24,16 +25,45 @@ class PackageStatus:
 
     # Return the status at a specified time.
     def getStatusAt(self, time):
+        if isinstance(time, str):
+            time = ClockTime(time)
         for status, timestamp in reversed(self.trackingHistory):
             if time >= timestamp:
                 return status
         return None
+    
+    def get_status_in_range(self, t1, t2):
+        if isinstance(t1, str):
+            t1 = ClockTime(t1)
+        if isinstance(t2, str):
+            t2 = ClockTime(t2)
+        if t2 < t1:
+            t1, t2 = t2, t1
+        status_list = [(self.getStatusAt(t2), t2.get_time_str())]
+        for status, timestamp in reversed(self.trackingHistory):
+            if t2 < timestamp:
+                continue
+         
+            if t1 >= timestamp:
+                status_list.append((status, t1.get_time_str()))
+                break
+            status_list.append((status, timestamp))
+      
+        return status_list[::-1]       #Reverse list back
     def is_delivered_at(self, time):
         return self.getStatusAt(time) == State.DELIVERED
     
+    def is_delivered_by_time(self, deadline):
+        delivery_time = self.get_delivery_time()
+        if delivery_time is not None:
+            return self.get_delivery_time() <= deadline
+        return False
+    
     def is_en_route_at(self, time):
         return self.getStatusAt(time) == State.EN_ROUTE
-
+    def is_delayed(self):
+        return self.arrived_at > START_SHIFT
+        
     def has_valid_address_at(self, time):
         for status, timestamp in self.trackingHistory:
             if status == State.VALID_ADDRESS:

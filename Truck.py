@@ -6,9 +6,9 @@ class Truck:
         self.hub = hub
         self.maxCapacity = maxCapacity
         self.packages = set()
-        self.mileage = 0
+        self.mileage = 0.0
         self.speed = speed
-        self.status = TruckStatus()
+        self.status = TruckStatus(self)
 
         self.hub.trucks.append(self)
 
