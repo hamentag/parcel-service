@@ -5,6 +5,8 @@ from PackageStatus import PackageStatus
 from data.Constants import PACKAGE_FILE_PATH, START_SHIFT, END_SHIFT
 
 # Read package data from CSV file and return a list of Package objects.
+# Time Complexity: O(n), Space Complexity: O(n)
+#  n is the number of rows in the CSV file = the number of packages
 def read_package_csv_file():
     packages = []
     with open(PACKAGE_FILE_PATH, mode='r', newline='', encoding='utf-8') as file:
@@ -12,23 +14,14 @@ def read_package_csv_file():
         for row in csv_reader:
             if row:  # Skip empty rows
                 id = int(row[0])                
-                address_id = int(row[1])
-
-                # EOD = 11:59 PM
+                address_id = int(row[1])                
                 deadline = ClockTime(END_SHIFT if row[2] == "EOD" else row[2])
-
-                weight = row[3]
-                
+                weight = row[3]                
                 truck_id_requirement =  int(row[4]) if  row[4] != '' else -1   # truck_id = 0, 1, or 2
-
                 arrived_at = ClockTime(START_SHIFT if row[5] == '' else row[5])
-
                 corrected_address_id = int(row[6]) if  row[6] != '' else -1
-
                 address_updated_at = ClockTime(START_SHIFT if row[7] == '' else row[7])
-
                 delivered_with = {int(item) for item in row[8].split(';') if item.isdigit()}
-
                 status = PackageStatus(deadline, arrived_at, address_updated_at)
 
                 # Create a Package object using the extracted data
@@ -37,6 +30,8 @@ def read_package_csv_file():
     return packages
 
 
+# Loads packages into the hash table.
+# Time Complexity: O(n), Space Complexity: O(n)
 def lod_packages_data(package_hash_table):
     print("Starting to populate the hash table...")
     # Insert packages into the hash table
