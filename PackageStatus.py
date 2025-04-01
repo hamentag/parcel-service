@@ -65,6 +65,8 @@ class PackageStatus:
         return self.arrived_at > START_SHIFT
         
     def has_valid_address_at(self, time):
+        if isinstance(time, str):
+            time = ClockTime(time)
         for status, timestamp in self.trackingHistory:
             if status == State.VALID_ADDRESS:
                 return time >= timestamp

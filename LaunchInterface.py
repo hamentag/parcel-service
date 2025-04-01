@@ -83,12 +83,13 @@ def print_package_status_at_time(package, address, time):
         )
         
     
-def print_package_status_in_range(package, address, t1, t2):
+def print_package_status_in_range(package, address_at_t1, address_at_t2, t1, t2):
     status_list_repr = ', '.join([f"{status[1]}: {repr(status[0])}" for status in package.status.get_status_in_range(t1, t2)])
     print(f"Package ID: {package.id}--- Status {t1}-{t2}: [{status_list_repr}]"\
             f"-- Deadline: {package.deadline.get_time_str()}"\
             f"-- Truck No: {package.truck_id + 1}"
-            f"-- Address: {format_address(address)}"
+            f"-- Address({t1}): {format_address(address_at_t1)}"
+            f"-- Address({t2}): {format_address(address_at_t2)}"
             )
 
 
@@ -139,16 +140,15 @@ def packages_overall_status(package_hash_table, hub):
     for pck in packages:
         package = package_hash_table.lookup(pck)
         if package:
-            address = fetch_address(package.address_id, package_hash_table)
+            delivery_time = package.status.get_delivery_time()
+            delivery_address = fetch_address(package.get_address_id(delivery_time), package_hash_table) 
             package_history_repr = ', '.join([f"{repr(status[0])}|{status[1]}" for status in package.status.trackingHistory])
             print(f"Package ID: {package.id}-- Tracking History=[{package_history_repr}]"
                 f"-- Deadline: {package.deadline.get_time_str()}"\
                 f"-- Delivered in Time: {'Yes' if package.status. is_delivered_by_time(package.deadline) else 'No'}"
                 f"-- Truck No: {package.truck_id + 1}"
-                f"-- Address: {format_address(address)}"
+                f"-- Delivery Address: {format_address(delivery_address)}"
             )
-    print(f"\t--------------------------------------------------------------------"
-          f"\n\tEnd of Delivery Day: {hub.end_of_delivery_day}")
 
 
 ########### Drivers
@@ -174,15 +174,16 @@ def packages_status_at_time(package_hash_table):
     for pck in packages:
         package = package_hash_table.lookup(pck)
         if package:
-            address = fetch_address(package.address_id, package_hash_table)
+            address = fetch_address(package.get_address_id(time), package_hash_table) 
             print_package_status_at_time(package, address, time)
         
 #
 def specific_package_status_at_time(package_hash_table):
     package = get_package_by_id(package_hash_table)
     if package:
-        address = fetch_address(package.address_id, package_hash_table)
         time = input_time()
+        address = fetch_address(package.get_address_id(time), package_hash_table)
+        
         print(f"\n================== Status of the package with ID {package.id} at {time} ======================\n"
                 "Note:\tREADY = AT_THE_HUB and VALID_ADDRESS\n---------------------------------------")
         print_package_status_at_time(package, address, time)
@@ -203,8 +204,9 @@ def packages_status_in_range(package_hash_table):
         package = package_hash_table.lookup(pck)
 
         if package:
-            address = fetch_address(package.address_id, package_hash_table)
-            print_package_status_in_range(package, address, t1, t2)
+            address_at_t1 = fetch_address(package.get_address_id(t1), package_hash_table)
+            address_at_t2 = fetch_address(package.get_address_id(t2), package_hash_table)
+            print_package_status_in_range(package, address_at_t1, address_at_t2, t1, t2)
 
         
 def specific_package_status_in_range(package_hash_table):
@@ -215,11 +217,12 @@ def specific_package_status_in_range(package_hash_table):
         print('To:')
         t2 = input_time()
         
-        address = fetch_address(package.address_id, package_hash_table)
+        address_at_t1 = fetch_address(package.get_address_id(t1), package_hash_table)
+        address_at_t2 = fetch_address(package.get_address_id(t2), package_hash_table)
 
     print(f"\n============== Status of the package with ID {package.id} within the time range [{t1}, {t2}] =====================\n"    
               "Note:\tREADY = AT_THE_HUB and VALID_ADDRESS\n---------------------------------------")
-    print_package_status_in_range(package, address, t1, t2)
+    print_package_status_in_range(package, address_at_t1, address_at_t2, t1, t2)
 
     
 # Input a package id and display details of the specific package
